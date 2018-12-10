@@ -1,0 +1,5 @@
+.env
+data/*
+
+!/data/mariadb/.gitkeep
+!/data/mysql/.gitkeep

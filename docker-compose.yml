@@ -1,0 +1,50 @@
+version: '3'
+
+services:
+  # =MariaDB
+  mariadb:
+    image: phpcanister-mariadb:1.0.0
+    build:
+      context: ./mariadb
+      args:
+        - MARIADB_VERSION=${MARIADB_VERSION}
+        - HOST_USER_UID=${HOST_USER_UID}
+    ports:
+      - "${MARIADB_HOST_PORT}:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    volumes:
+      - "./data/mariadb:/var/lib/mysql:delegated"
+  # =MySQL
+  mysql:
+    image: phpcanister-mysql:1.0.0
+    build:
+      context: ./mysql
+      args:
+        - MYSQL_VERSION=${MYSQL_VERSION}
+        - HOST_USER_UID=${HOST_USER_UID}
+    ports:
+      - "${MYSQL_HOST_PORT}:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    volumes:
+      - "./data/mysql:/var/lib/mysql:delegated"
+  # nginx
+  nginx:
+    image: phpcanister-nginx:1.0.0
+    build:
+      context: ./nginx
+      args:
+        - HOST_USER_UID=${HOST_USER_UID}
+    ports:
+      - ${NGINX_HOST_PORT}:80
+    volumes:
+      - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
+  php:
+    image: phpcanister-php:1.0.0
+    build:
+      context: ./php
+      args:
+        - HOST_USER_UID=${HOST_USER_UID}
+    volumes:
+      - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
