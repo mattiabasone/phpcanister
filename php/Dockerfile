@@ -1,6 +1,8 @@
 FROM ubuntu:16.04
 
 ARG HOST_USER_UID
+ARG APP_CODE_PATH_CONTAINER
+
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update
@@ -79,10 +81,10 @@ RUN groupmod -g ${HOST_USER_UID} phpcanister
 RUN mkdir /run/php/
 RUN chown phpcanister:root /run/php/
 
-RUN mkdir -p /phpcanister/code
-RUN chown phpcanister:phpcanister /phpcanister/code
+RUN mkdir -p ${APP_CODE_PATH_CONTAINER}
+RUN chown phpcanister:phpcanister ${APP_CODE_PATH_CONTAINER}
 
-VOLUME /phpcanister/code/
+VOLUME ${APP_CODE_PATH_CONTAINER}
 
 # CMD
 CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/supervisord.conf"]
