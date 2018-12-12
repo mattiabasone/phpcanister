@@ -1,5 +1,7 @@
 .env
 data/*
+nginx/sites/*
 
 !/data/mariadb/.gitkeep
 !/data/mysql/.gitkeep
+!nginx/sites/laravel.conf.example
