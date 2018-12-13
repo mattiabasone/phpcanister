@@ -55,7 +55,12 @@ RUN apt-get install -y php7.3 php7.3-calendar  php7.3-ctype php7.3-curl php7.3-d
    	php7.3-tokenizer php7.3-wddx php7.3-xml php7.3-xmlreader php7.3-xmlwriter\
    	php7.3-xsl php7.3-opcache php7.3-zip php7.3-fpm php7.3-bcmath
 
+# Adding phpcanister user
+RUN useradd phpcanister -u ${HOST_USER_UID} -g ${HOST_USER_UID}  -d /phpcanister
+
+# Installing composer
 RUN curl -sS https://getcomposer.org/installer -o /tmp/composer-setup.php; php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer
+RUN curl https://getcomposer.org/composer.phar -O /phpcanister/bin/composer.phar
 
 COPY .bash_aliases /root/.bash_aliases
 
@@ -74,10 +79,6 @@ COPY fpm/7.3.conf /etc/php/7.3/fpm/pool.d/phpcanister.conf
 
 COPY supervisor/* /etc/supervisor/conf.d/
 
-RUN useradd -r phpcanister
-RUN usermod -u ${HOST_USER_UID} phpcanister
-RUN groupmod -g ${HOST_USER_UID} phpcanister
-
 RUN mkdir /run/php/
 RUN chown phpcanister:root /run/php/
 
@@ -86,7 +87,6 @@ RUN chown phpcanister:phpcanister ${APP_CODE_PATH_CONTAINER}
 
 VOLUME ${APP_CODE_PATH_CONTAINER}
 
-# CMD
 CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/supervisord.conf"]
 
 EXPOSE 9056 9070 9071 9072 9073

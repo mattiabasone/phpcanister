@@ -25,6 +25,10 @@ function artisan72() {
     php7.2 artisan "$@"
 }
 
+function artisan73() {
+    php7.3 artisan "$@"
+}
+
 function php56() {
     update-alternatives --set php /usr/bin/php5.6
 }
@@ -41,6 +45,10 @@ function php72() {
     update-alternatives --set php /usr/bin/php7.2
 }
 
+function php73() {
+    update-alternatives --set php /usr/bin/php7.3
+}
+
 function composer56() {
     php5.6 /opt/bin/composer.phar "$@"
 }
@@ -55,4 +63,8 @@ function composer71() {
 
 function composer72() {
     php7.2 /opt/bin/composer.phar "$@"
+}
+
+function composer73() {
+    php7.3 /opt/bin/composer.phar "$@"
 }
