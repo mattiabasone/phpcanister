@@ -55,14 +55,20 @@ RUN apt-get install -y php7.3 php7.3-calendar  php7.3-ctype php7.3-curl php7.3-d
    	php7.3-tokenizer php7.3-wddx php7.3-xml php7.3-xmlreader php7.3-xmlwriter\
    	php7.3-xsl php7.3-opcache php7.3-zip php7.3-fpm php7.3-bcmath
 
+RUN apt-get install -y php-memcached php-redis
+
 # Adding phpcanister user
-RUN useradd phpcanister -u ${HOST_USER_UID} -g ${HOST_USER_UID}  -d /phpcanister
+RUN useradd phpcanister -u ${HOST_USER_UID} -d /phpcanister -s /bin/bash
+RUN groupmod phpcanister -g ${HOST_USER_UID}
+RUN mkdir -p /phpcanister/bin
 
 # Installing composer
 RUN curl -sS https://getcomposer.org/installer -o /tmp/composer-setup.php; php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer
-RUN curl https://getcomposer.org/composer.phar -O /phpcanister/bin/composer.phar
+RUN curl https://getcomposer.org/composer.phar -o /phpcanister/bin/composer.phar
 
 COPY .bash_aliases /root/.bash_aliases
+RUN cp /root/.bashrc /phpcanister/.bashrc
+RUN cp /root/.bash_aliases /phpcanister/.bash_aliases
 
 RUN rm /etc/php/5.6/fpm/pool.d/www.conf
 RUN rm /etc/php/7.0/fpm/pool.d/www.conf
@@ -83,7 +89,8 @@ RUN mkdir /run/php/
 RUN chown phpcanister:root /run/php/
 
 RUN mkdir -p ${APP_CODE_PATH_CONTAINER}
-RUN chown phpcanister:phpcanister ${APP_CODE_PATH_CONTAINER}
+RUN chown -R phpcanister:phpcanister /phpcanister
+RUN chown -R phpcanister:phpcanister ${APP_CODE_PATH_CONTAINER}
 
 VOLUME ${APP_CODE_PATH_CONTAINER}
 

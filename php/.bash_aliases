@@ -50,21 +50,21 @@ function php73() {
 }
 
 function composer56() {
-    php5.6 /opt/bin/composer.phar "$@"
+    php5.6 /phpcanister/bin/composer.phar "$@"
 }
 
 function composer70() {
-    php7.0 /opt/bin/composer.phar "$@"
+    php7.0 /phpcanister/bin/composer.phar "$@"
 }
 
 function composer71() {
-    php7.1 /opt/bin/composer.phar "$@"
+    php7.1 /phpcanister/bin/composer.phar "$@"
 }
 
 function composer72() {
-    php7.2 /opt/bin/composer.phar "$@"
+    php7.2 /phpcanister/bin/composer.phar "$@"
 }
 
 function composer73() {
-    php7.3 /opt/bin/composer.phar "$@"
+    php7.3 /phpcanister/bin/composer.phar "$@"
 }
