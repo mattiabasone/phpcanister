@@ -9,11 +9,13 @@ RUN apt-get update
 RUN apt-get dist-upgrade -y
 RUN apt-get install -y aptitude software-properties-common
 
+# Adding PHP Ondrej repos
+RUN add-apt-repository -y ppa:nginx/stable
 RUN LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
 RUN apt-get update
 RUN apt-get upgrade -y
 
-RUN apt-get install -y curl vim unzip supervisor
+RUN apt-get install -y curl vim unzip supervisor nginx
 
 RUN apt-get install -y php5.6 php5.6-calendar php5.6-ctype php5.6-curl php5.6-dom  php5.6-exif\
     php5.6-fileinfo php5.6-ftp php5.6-gd php5.6-gettext php5.6-iconv php5.6-json\
@@ -70,6 +72,12 @@ COPY .bash_aliases /root/.bash_aliases
 RUN cp /root/.bashrc /phpcanister/.bashrc
 RUN cp /root/.bash_aliases /phpcanister/.bash_aliases
 
+# nginx configuration
+RUN mkdir /etc/nginx/sites
+COPY nginx/nginx.conf /etc/nginx/
+COPY nginx/conf.d/*.conf /etc/nginx/conf.d/
+COPY nginx/sites/*.conf /etc/nginx/sites/
+
 RUN rm /etc/php/5.6/fpm/pool.d/www.conf
 RUN rm /etc/php/7.0/fpm/pool.d/www.conf
 RUN rm /etc/php/7.1/fpm/pool.d/www.conf
@@ -96,4 +104,4 @@ VOLUME ${APP_CODE_PATH_CONTAINER}
 
 CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/supervisord.conf"]
 
-EXPOSE 9056 9070 9071 9072 9073
+EXPOSE 80 9056 9070 9071 9072 9073

@@ -1,10 +1,10 @@
-ARG HOST_USER_UID
 ARG MARIADB_VERSION
+FROM mariadb:${MARIADB_VERSION}
 
-FROM mariadb:latest
+ARG HOST_USER_UID
 
-#RUN usermod -u ${HOST_USER_UID} mysql
-#RUN mkdir -p /var/run/mysqld
-#RUN chown mysql:mysql /var/run/mysqld
+RUN usermod mysql -u ${HOST_USER_UID}
+RUN mkdir -p /var/run/mysqld
+RUN chown mysql:mysql /var/run/mysqld
 
 VOLUME /var/lib/mysql
