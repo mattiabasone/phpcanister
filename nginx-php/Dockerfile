@@ -57,7 +57,7 @@ RUN apt-get install -y php7.3 php7.3-calendar  php7.3-ctype php7.3-curl php7.3-d
    	php7.3-tokenizer php7.3-wddx php7.3-xml php7.3-xmlreader php7.3-xmlwriter\
    	php7.3-xsl php7.3-opcache php7.3-zip php7.3-fpm php7.3-bcmath
 
-RUN apt-get install -y php-memcached php-redis
+RUN apt-get install -y php-memcached php-redis php-imagick php-mongo
 
 # Adding phpcanister user
 RUN useradd phpcanister -u ${HOST_USER_UID} -d /phpcanister -s /bin/bash
