@@ -1,0 +1,8 @@
+# You can add your app(s) laravel queue here
+#
+[program:my-app-queue]
+command=/usr/bin/php7.1 /phpcanister/code/my-app/artisan queue:work --tries=1 --queue=myqueue
+user=phpcanister
+numprocs=1
+autostart=true
+autorestart=true
