@@ -104,4 +104,4 @@ VOLUME ${APP_CODE_PATH_CONTAINER}
 
 CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/supervisord.conf"]
 
-EXPOSE 80 9056 9070 9071 9072 9073
+EXPOSE 80
