@@ -14,7 +14,7 @@ Available containers:
 ### Configuration
 
 - Copy `.env.example` as `.env`
-- Configurare le varie voci a seconda delle proprie esigenze:
+- Configure directives according to your needs:
     - HOST_USER_UID: Set your user id on the host, you can get it using `echo $UID` (linux-only)
     - APP_CODE_PATH_HOST: Set the path where you saved your files on the host
     - APP_CODE_PATH_CONTAINER: Set the path of the shared volume of the container. Change this value only if you know 

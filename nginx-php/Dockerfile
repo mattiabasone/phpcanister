@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
 ARG HOST_USER_UID
 ARG APP_CODE_PATH_CONTAINER
@@ -7,7 +7,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update
 RUN apt-get dist-upgrade -y
-RUN apt-get install -y aptitude software-properties-common
+RUN apt-get install -y aptitude apt-utils software-properties-common
 
 # Adding PHP Ondrej repos
 RUN add-apt-repository -y ppa:nginx/stable
@@ -15,7 +15,7 @@ RUN LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
 RUN apt-get update
 RUN apt-get upgrade -y
 
-RUN apt-get install -y curl vim unzip supervisor nginx
+RUN apt-get install -y curl iproute2 vim unzip supervisor nginx
 
 RUN apt-get install -y php5.6 php5.6-calendar php5.6-ctype php5.6-curl php5.6-dom  php5.6-exif\
     php5.6-fileinfo php5.6-ftp php5.6-gd php5.6-gettext php5.6-iconv php5.6-json\
@@ -58,6 +58,9 @@ RUN apt-get install -y php7.3 php7.3-calendar  php7.3-ctype php7.3-curl php7.3-d
    	php7.3-xsl php7.3-opcache php7.3-zip php7.3-fpm php7.3-bcmath
 
 RUN apt-get install -y php-memcached php-redis php-imagick php-mongo
+
+RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
+RUN apt-get install -y nodejs
 
 # Adding phpcanister user
 RUN useradd phpcanister -u ${HOST_USER_UID} -d /phpcanister -s /bin/bash
