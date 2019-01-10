@@ -40,4 +40,5 @@ services:
     ports:
       - ${NGINX_HOST_PORT}:80
     volumes:
-      - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
+      - "${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}"
+      - "./nginx-php/nginx/sites/:/etc/nginx/sites"

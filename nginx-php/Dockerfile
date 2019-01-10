@@ -72,6 +72,7 @@ RUN curl -sS https://getcomposer.org/installer -o /tmp/composer-setup.php; php /
 RUN curl https://getcomposer.org/composer.phar -o /phpcanister/bin/composer.phar
 
 COPY .bash_aliases /root/.bash_aliases
+RUN cp /root/.profile /phpcanister/.profile
 RUN cp /root/.bashrc /phpcanister/.bashrc
 RUN cp /root/.bash_aliases /phpcanister/.bash_aliases
 
@@ -79,7 +80,6 @@ RUN cp /root/.bash_aliases /phpcanister/.bash_aliases
 RUN mkdir /etc/nginx/sites
 COPY nginx/nginx.conf /etc/nginx/
 COPY nginx/conf.d/*.conf /etc/nginx/conf.d/
-COPY nginx/sites/*.conf /etc/nginx/sites/
 
 RUN rm /etc/php/5.6/fpm/pool.d/www.conf
 RUN rm /etc/php/7.0/fpm/pool.d/www.conf
