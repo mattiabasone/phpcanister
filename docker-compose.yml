@@ -1,4 +1,4 @@
-version: '3'
+version: '3.7'
 
 services:
   # =MariaDB
@@ -45,8 +45,6 @@ services:
   redis:
     image: redis:${REDIS_VERSION}
     command: ["redis-server", "--appendonly", "yes"]
-    volumes:
-      - "./data/redis/:/data:delegated"
   # =memcached
   memcached:
     image: memcached:${MEMCACHED_VERSION}
