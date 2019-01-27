@@ -4,6 +4,9 @@ ARG HOST_USER_UID
 ARG APP_CODE_PATH_CONTAINER
 
 ENV DEBIAN_FRONTEND noninteractive
+ENV PHP_XDEBUG_IDE_KEY PHPSTORM
+
+USER root
 
 RUN apt-get update
 RUN apt-get dist-upgrade -y
@@ -15,7 +18,7 @@ RUN LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
 RUN apt-get update
 RUN apt-get upgrade -y
 
-RUN apt-get install -y curl iproute2 vim unzip supervisor nginx
+RUN apt-get install -y curl iproute2 vim unzip supervisor nginx sudo
 
 RUN apt-get install -y php5.6 php5.6-calendar php5.6-ctype php5.6-curl php5.6-dom  php5.6-exif\
     php5.6-fileinfo php5.6-ftp php5.6-gd php5.6-gettext php5.6-iconv php5.6-json\
@@ -65,7 +68,9 @@ RUN apt-get install -y nodejs
 # Adding phpcanister user
 RUN useradd phpcanister -u ${HOST_USER_UID} -d /phpcanister -s /bin/bash
 RUN groupmod phpcanister -g ${HOST_USER_UID}
+RUN echo "phpcanister ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/phpcanister
 RUN mkdir -p /phpcanister/bin
+RUN mkdir -p ${APP_CODE_PATH_CONTAINER}
 
 # Installing composer
 RUN curl -sS https://getcomposer.org/installer -o /tmp/composer-setup.php; php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer
@@ -78,33 +83,40 @@ RUN cp /root/.bash_aliases /phpcanister/.bash_aliases
 
 # nginx configuration
 RUN mkdir /etc/nginx/sites
+RUN mkdir /etc/nginx/ssl
 COPY nginx/nginx.conf /etc/nginx/
 COPY nginx/conf.d/*.conf /etc/nginx/conf.d/
 
-RUN rm /etc/php/5.6/fpm/pool.d/www.conf
-RUN rm /etc/php/7.0/fpm/pool.d/www.conf
-RUN rm /etc/php/7.1/fpm/pool.d/www.conf
-RUN rm /etc/php/7.2/fpm/pool.d/www.conf
-RUN rm /etc/php/7.3/fpm/pool.d/www.conf
+# Copying FPM pools configuration
+COPY fpm/5.6.conf /etc/php/5.6/fpm/pool.d/www.conf
+COPY fpm/7.0.conf /etc/php/7.0/fpm/pool.d/www.conf
+COPY fpm/7.1.conf /etc/php/7.1/fpm/pool.d/www.conf
+COPY fpm/7.2.conf /etc/php/7.2/fpm/pool.d/www.conf
+COPY fpm/7.3.conf /etc/php/7.3/fpm/pool.d/www.conf
 
-# Copio le configurazioni dei pool fpm
-COPY fpm/5.6.conf /etc/php/5.6/fpm/pool.d/phpcanister.conf
-COPY fpm/7.0.conf /etc/php/7.0/fpm/pool.d/phpcanister.conf
-COPY fpm/7.1.conf /etc/php/7.1/fpm/pool.d/phpcanister.conf
-COPY fpm/7.2.conf /etc/php/7.2/fpm/pool.d/phpcanister.conf
-COPY fpm/7.3.conf /etc/php/7.3/fpm/pool.d/phpcanister.conf
+# Enabling xdebug
+RUN for tmp_php_version in 5.6 7.0 7.1 7.2 7.3;\
+    do \
+        echo "xdebug.remote_enable=1" >> /etc/php/${tmp_php_version}/fpm/conf.d/20-xdebug.ini;\
+        echo "xdebug.remote_host=docker.host.internal" >> /etc/php/${tmp_php_version}/fpm/conf.d/20-xdebug.ini;\
+        echo "xdebug.remote_port=9000" >> /etc/php/${tmp_php_version}/fpm/conf.d/20-xdebug.ini;\
+        echo "xdebug.idekey=${PHP_XDEBUG_IDE_KEY}" >> /etc/php/${tmp_php_version}/fpm/conf.d/20-xdebug.ini;\
+done
 
-COPY supervisor/* /etc/supervisor/conf.d/
-
+# Creating dir for fpm sockets
 RUN mkdir /run/php/
 RUN chown phpcanister:root /run/php/
 
-RUN mkdir -p ${APP_CODE_PATH_CONTAINER}
-RUN chown -R phpcanister:phpcanister /phpcanister
-RUN chown -R phpcanister:phpcanister ${APP_CODE_PATH_CONTAINER}
+COPY supervisor/* /etc/supervisor/conf.d/
 
 VOLUME ${APP_CODE_PATH_CONTAINER}
 
-CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/supervisord.conf"]
+RUN chown -R phpcanister:phpcanister /phpcanister
+RUN chown -R phpcanister:phpcanister ${APP_CODE_PATH_CONTAINER}
 
-EXPOSE 80
+USER phpcanister
+
+ADD ./startup.sh /startup.sh
+CMD ["/bin/bash", "/startup.sh"]
+
+EXPOSE 80 443

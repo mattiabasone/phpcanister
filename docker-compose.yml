@@ -4,6 +4,7 @@ services:
   # =MariaDB
   mariadb:
     image: phpcanister-mariadb:1.0.0
+    container_name: phpcanister-mariadb
     build:
       context: ./mariadb
       args:
@@ -18,6 +19,7 @@ services:
   # =MySQL
   mysql:
     image: phpcanister-mysql:1.0.0
+    container_name: phpcanister-mysql
     build:
       context: ./mysql
       args:
@@ -32,19 +34,26 @@ services:
   # =nginx-PHP
   nginx-php:
     image: phpcanister-nginx-php:1.0.0
+    container_name: phpcanister-nginx-php
     build:
       context: ./nginx-php
       args:
         - HOST_USER_UID=${HOST_USER_UID}
         - APP_CODE_PATH_CONTAINER=${APP_CODE_PATH_CONTAINER}
     ports:
-      - ${NGINX_HOST_PORT}:80
+      - ${NGINX_HTTP_HOST_PORT}:80
+      - ${NGINX_HTTPS_HOST_PORT}:443
+    environment:
+      - PHP_XDEBUG_IDE_KEY=${PHP_XDEBUG_IDE_KEY}
     volumes:
       - "${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}"
       - "./nginx-php/nginx/sites/:/etc/nginx/sites"
+      - "./nginx-php/nginx/ssl/:/etc/nginx/ssl"
   redis:
     image: redis:${REDIS_VERSION}
+    container_name: phpcanister-redis
     command: ["redis-server", "--appendonly", "yes"]
   # =memcached
   memcached:
     image: memcached:${MEMCACHED_VERSION}
+    container_name: phpcanister-memcached
