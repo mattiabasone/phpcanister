@@ -115,6 +115,7 @@ RUN chown -R phpcanister:phpcanister /phpcanister
 RUN chown -R phpcanister:phpcanister ${APP_CODE_PATH_CONTAINER}
 
 USER phpcanister
+WORKDIR /phpcanister/code
 
 ADD ./startup.sh /startup.sh
 CMD ["/bin/bash", "/startup.sh"]
