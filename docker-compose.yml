@@ -57,3 +57,12 @@ services:
   memcached:
     image: memcached:${MEMCACHED_VERSION}
     container_name: phpcanister-memcached
+  # =phpmyadmin
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - 8080:80
+    environment:
+      MYSQL_USERNAME: root
+      MYSQL_ROOT_PASSWORD: root
+      PMA_HOST: db
