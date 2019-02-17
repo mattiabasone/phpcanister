@@ -65,6 +65,9 @@ RUN apt-get install -y php-memcached php-redis php-imagick php-mongo
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
 RUN apt-get install -y nodejs
 
+# Adding GIT
+RUN apt-get install -y git
+
 # Adding phpcanister user
 RUN useradd phpcanister -u ${HOST_USER_UID} -d /phpcanister -s /bin/bash
 RUN groupmod phpcanister -g ${HOST_USER_UID}
