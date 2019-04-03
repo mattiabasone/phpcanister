@@ -5,6 +5,9 @@ alias h='cd ~'
 alias c='clear'
 alias art=artisan
 
+alias nginx-reload="sudo nginx -s reload"
+alias nginx-test="sudo nginx -t"
+
 function artisan() {
     php artisan "$@"
 }
